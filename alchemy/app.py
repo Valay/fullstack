@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import sys
 
 app = Flask(__name__)
@@ -8,11 +9,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://valashah@localhost:5432/to
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 class Person(db.Model):
     __tablename__ = 'persons'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
+    completed = db.Column(db.Boolean(), unique=False, default=True)
 
     def __repr__(self):
         return f'<Person id: {self.id}, name: {self.name}>'
