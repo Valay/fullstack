@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
+import sys
 
 app = Flask(__name__)
 
@@ -28,14 +29,23 @@ db.create_all()
 
 @app.route('/todos/create', methods=['POST'])
 def create():
-    jsonDes = request.get_json()
-    description = jsonDes['description']
-    todo = Todo(description=description)
-    db.session.add(todo)
-    db.session.commit()
-    return jsonify({
-        'description' : todo.description
-    })
+    body = {}
+    error = False
+    try:
+        description = request.get_json()['description']
+        todo = Todo(description=description)
+        db.session.add(todo)
+        db.session.commit()
+        body[description] = todo.description
+    except:
+        print("Unexpected Error occcurred:", sys.exec_info()[0])
+        db.session.rollback()
+        error = True
+    finally:
+        db.session.close()
+    if error:
+        abort(400)
+    return jsonify(body)
 
 @app.route('/')
 def index():
