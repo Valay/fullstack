@@ -5,7 +5,7 @@ import sys
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://valashah@localhost:5432/todos'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://valashah@localhost:5432/todoapp'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -15,7 +15,6 @@ class Person(db.Model):
     __tablename__ = 'persons'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
-    completed = db.Column(db.Boolean(), unique=False, default=True)
 
     def __repr__(self):
         return f'<Person id: {self.id}, name: {self.name}>'
@@ -24,11 +23,12 @@ class Todo(db.Model):
     __tablename__ = 'todos'
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(), nullable=False)
+    completed = db.Column(db.Boolean(), nullable=False, default=False)
 
     def __repr__(self):
         return f'<Todo Item: {self.id} {self.description}>'
 
-db.create_all()
+#db.create_all()
 
 @app.route('/todos/create', methods=['POST'])
 def create():
@@ -41,7 +41,7 @@ def create():
         db.session.commit()
         body[description] = todo.description
     except:
-        print("Unexpected Error occcurred:", sys.exec_info()[0])
+        print("Unexpected Error occurred:", sys.exec_info()[0])
         db.session.rollback()
         error = True
     finally:
