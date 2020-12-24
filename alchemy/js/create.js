@@ -24,6 +24,12 @@ const descInput = document.getElementById('description');
           checkbox.setAttribute('onclick','onChange(this)');
           li.appendChild(checkbox);
           li.appendChild(document.createTextNode(desc));
+          button = document.createElement('button');
+          button.setAttribute('class','delete');
+          button.setAttribute('data-id',id);
+          button.setAttribute('onclick','onDelete(this)');
+          button.innerHTML = '&cross;';
+          li.appendChild(button);
           document.getElementById('todos').appendChild(li);
           document.getElementById('error').className = 'hidden';
         })

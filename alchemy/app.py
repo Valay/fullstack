@@ -28,6 +28,26 @@ class Todo(db.Model):
     def __repr__(self):
         return f'<Todo Item: {self.id} {self.description}>'
 
+@app.route('/todos/deleted', methods=['DELETE'])
+def onDelete():
+    body = {}
+    error = False
+    try:
+        delete_id = request.get_json()['id']
+        Todo.query.filter_by(id=delete_id).delete()
+        db.session.commit()
+        body['success'] = True
+    except:
+        print("Unexpected Error occurred:", sys.exec_info()[0])
+        db.session.rollback()
+        error = True
+        body['success'] = False
+    finally:
+        db.session.close()
+    if error:
+        abort(400)
+    return jsonify(body)
+
 @app.route('/todos/completed', methods=['POST'])
 def onCompleteCheck():
     body = {}

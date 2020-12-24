@@ -9,9 +9,21 @@
         list-style: none;
         padding: 0;
         margin: 0;
+        width: 250px;
       }
       .complete {
         text-decoration: line-through
+      }
+      li {
+        clear: both;
+      }
+      .delete {
+        border: none;
+        background-color: white;
+        outline: none;
+        color: red;
+        float: right;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -23,10 +35,15 @@
     </form>
     <ul id="todos">
       {% for d in data %}
-      <li {% if d.completed %} class="complete" {% endif %} ><input class="check-completed" data-id="{{ d.id }}" type="checkbox" {% if d.completed %} checked {% endif %} onclick="onChange(this)" /> {{ d.description }}</li>
+      <li {% if d.completed %} class="complete" {% endif %} >
+        <input class="check-completed" data-id="{{ d.id }}" type="checkbox" {% if d.completed %} checked {% endif %} onclick="onChange(this)" />
+        {{ d.description }}
+        <button class="delete" data-id="{{ d.id }}" onclick="onDelete(this)">&cross;</button>
+      </li>
       {% endfor %}
     </ul>
     <script type="text/javascript" src="js/check-completed.js"></script>
     <script type="text/javascript"  src="js/create.js"></script>
+  <script type="text/javascript"  src="js/ondelete.js"></script>
   </body>
 </html>
