@@ -5,6 +5,14 @@
       #error {
         display: none;
       }
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .complete {
+        text-decoration: line-through
+      }
     </style>
   </head>
   <body>
@@ -15,36 +23,10 @@
     </form>
     <ul id="todos">
       {% for d in data %}
-      <li>{{ d.description }}</li>
+      <li {% if d.completed %} class="complete" {% endif %} ><input class="check-completed" data-id="{{ d.id }}" type="checkbox" {% if d.completed %} checked {% endif %} onclick="onChange(this)" /> {{ d.description }}</li>
       {% endfor %}
     </ul>
-    <script>
-      const descInput = document.getElementById('description');
-      document.getElementById('form').onsubmit = function(e) {
-        e.preventDefault();
-        const desc = descInput.value;
-        descInput.value = '';
-        fetch('/todos/create', {
-          method: 'POST',
-          body: JSON.stringify({
-            'description': desc,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-        .then(response => response.json())
-        .then(jsonResponse => {
-          console.log('response', jsonResponse);
-          li = document.createElement('li');
-          li.innerText = desc;
-          document.getElementById('todos').appendChild(li);
-          document.getElementById('error').className = 'hidden';
-        })
-        .catch(function() {
-          document.getElementById('error').className = '';
-        })
-      }
-    </script>
+    <script type="text/javascript" src="js/check-completed.js"></script>
+    <script type="text/javascript"  src="js/create.js"></script>
   </body>
 </html>
