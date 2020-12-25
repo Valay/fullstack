@@ -2,11 +2,13 @@ const descInput = document.getElementById('description');
       document.getElementById('form').onsubmit = function(e) {
         e.preventDefault();
         const desc = descInput.value;
+        const listId = document.getElementById('form').dataset['id'];
         descInput.value = '';
         fetch('/todos/create', {
           method: 'POST',
           body: JSON.stringify({
             'description': desc,
+            'list-id' : listId
           }),
           headers: {
             'Content-Type': 'application/json',

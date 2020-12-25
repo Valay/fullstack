@@ -5,8 +5,16 @@
       #error {
         display: none;
       }
-      ul {
+      #error-list {
+        display: none;
+      }
+      #todos {
         list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 250px;
+      }
+      #lists {
         padding: 0;
         margin: 0;
         width: 250px;
@@ -19,31 +27,60 @@
       }
       .delete {
         border: none;
-        background-color: white;
+        background-color: #fffecf;
         outline: none;
         color: red;
         float: right;
         cursor: pointer;
       }
+      .list-wrapper, .todos-wrapper {
+        display: inline-block;
+        vertical-align: top;
+      }
+      .todos-wrapper {
+        background-color : #fffecf;
+      }
     </style>
   </head>
   <body>
-    <div id="error" class="hidden">Something went wrong!</div>
-    <form id="form" method="post" action="/todos/create">
-      <input type="text" id="description" name="description" />
-      <input type="submit" value="Create" />
+  <div> <h2> A Simple Version of TODO App </h2></div>
+  <div class="list-wrapper">
+    <h3> My Todo Lists </h3>
+    <form id="list-form" method="post" action="/lists/create">
+          <i>Create List: </i>
+      <input type="text" id="name" name="name" />
+      <input type="submit" value="Create List" />
     </form>
+    <div id="error-list" class="hidden">Something went wrong!</div>
+    <ul id="lists">
+      {% for list in lists %}
+      <li> <a href="/lists/{{list.id}}" >{{ list.name }} </a>
+              <button class="delete" data-id="{{ list.id }}" onclick="onDeleteList(this)">&cross;</button> </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="todos-wrapper">
+    <h3> My Todo Items </h3>
+    <form id="form" method="post" data-id="{{ active_list.id }}" action="/todos/create">
+          <i>Create Task: </i>
+      <input type="text" id="description" name="description" />
+      <input type="submit" value="Create Task" />
+    </form>
+    <div id="error" class="hidden">Something went wrong!</div>
+    <h4> {{ active_list.name }} </h4>
     <ul id="todos">
-      {% for d in data %}
-      <li {% if d.completed %} class="complete" {% endif %} >
-        <input class="check-completed" data-id="{{ d.id }}" type="checkbox" {% if d.completed %} checked {% endif %} onclick="onChange(this)" />
-        {{ d.description }}
-        <button class="delete" data-id="{{ d.id }}" onclick="onDelete(this)">&cross;</button>
+      {% for todo in todos %}
+      <li {% if todo.completed %} class="complete" {% endif %} >
+        <input class="check-completed" data-id="{{ todo.id }}" type="checkbox" {% if todo.completed %} checked {% endif %} onclick="onChange(this)" />
+        {{ todo.description }}
+        <button class="delete" data-id="{{ todo.id }}" data-listid="{{ active_list.id }}" onclick="onDelete(this)">&cross;</button>
       </li>
       {% endfor %}
     </ul>
-    <script type="text/javascript" src="js/check-completed.js"></script>
-    <script type="text/javascript"  src="js/create.js"></script>
-  <script type="text/javascript"  src="js/ondelete.js"></script>
+  </div>
+  <script type="text/javascript" src="/js/check-completed.js"></script>
+  <script type="text/javascript"  src="/js/create.js"></script>
+  <script type="text/javascript"  src="/js/list-create.js"></script>
+  <script type="text/javascript"  src="/js/ondelete.js"></script>
   </body>
 </html>
